@@ -1,0 +1,214 @@
+[
+    [
+        "d",
+        "bin",
+        [
+            [
+                "x",
+                "sh",
+                "(forever (\n    (\"print _\" \n        (join \n            (\"get $file-1-255-255-255 _\" /env/pwd) \"$ \"\n        )\n    ) \n    (var in file command) \n    (set in \n        (input)\n    ) \n    (set command \n        (item 1 \n            (split \n                (get in) \" \"\n            )\n        )\n    ) \n    (set file \n        (\"get $file-1-255-255-255 _\" \n            (ifThen \n                (= \n                    (letter 1 \n                        (get command)\n                    ) /\n                ) \n                (get command) \n                (join \n                    (\"get $file-1-255-255-255 _\" /env/PATH) \n                    (get command)\n                )\n            )\n        )\n    ) \n    (if \n        (= exit \n            (get in)\n        ) (\n        (\"print _\" logout) \n        (stop \"[this script]\")\n    ) \n        (!= nil \n            (get in)\n        ) \n        (\"safely try _ then if _ _\" \n            (ifElse \n                (is \n                    (get file) [command]\n                ) \n                (\"safely try _ then if _ _\" \n                    (run \n                        (get file) \n                        (cdr \n                            (split \n                                (get in) \" \"\n                            )\n                        )\n                    ) error \n                    (\"print _\" \n                        (get error)\n                    )\n                ) \n                (\"print _\" \n                    (get file)\n                )\n            ) error \n            (\"print _\" \n                (get error)\n            )\n        )\n    )\n))"
+            ],
+            [
+                "x",
+                "ls",
+                "(warp \n    (ifElse \n        (!= \n            (\"args _\" nil) \n            (list)\n        ) \n        (ifElse \n            (\"exists? _\" \n                (\"make absolute _\" \n                    (item 1 \n                        (\"args _\" nil)\n                    )\n                )\n            ) \n            (forEach item \n                (data [sorted] \n                    (map \n                        (ring \n                            (item 2 nil)\n                        ) \n                        (\"get $file-1-255-255-255 _\" \n                            (item 1 \n                                (\"args _\" nil)\n                            )\n                        )\n                    )\n                ) \n                (\"print _\" \n                    (get item)\n                )\n            ) \n            (\"print _\" \"ERROR: not found\")\n        ) \n        (ifElse \n            (= \n                (\"get $file-1-255-255-255 _\" /env/pwd) /\n            ) \n            (forEach item \n                (map \n                    (ring \n                        (item 2 nil)\n                    ) \n                    (\"get $file-1-255-255-255 _\" /)\n                ) \n                (\"print _\" \n                    (get item)\n                )\n            ) \n            (ifElse \n                (= \n                    (\"type of _\" \n                        (item 1 \n                            (\"args _\" nil)\n                        )\n                    ) d\n                ) \n                (forEach item \n                    (map \n                        (ring \n                            (item 2 nil)\n                        ) \n                        (\"get $file-1-255-255-255 _\" \n                            (\"get $file-1-255-255-255 _\" /env/pwd)\n                        )\n                    ) \n                    (\"print _\" \n                        (get item)\n                    )\n                ) \n                (\"print _\" \n                    (\"make absolute _\" \n                        (item 1 \n                            (\"args _\" nil)\n                        )\n                    )\n                )\n            )\n        )\n    )\n)"
+            ],
+            [
+                "x",
+                "clear",
+                "(\"set $file-1-255-255-255 _ to _\" /dev/tty0 \n    (data [text] \n        (list)\n    )\n)"
+            ],
+            [
+                "x",
+                "echo",
+                "(\"print _\" \n    (data [text] nil)\n)"
+            ],
+            [
+                "x",
+                "cat",
+                "(\n    (var file contents type) \n    (set file \n        (\"make absolute _\" \n            (item 1 nil)\n        )\n    ) \n    (set contents \n        (\"get $file-1-255-255-255 _\" \n            (get file)\n        )\n    ) \n    (set type \n        (\"type of _\" \n            (get file)\n        )\n    ) \n    (\"print _\" \n        (ifThen \n            (= \n                (get type) \\f\n            ) \n            (get contents) \n            (ifThen \n                (= \n                    (get type) x\n                ) \n                (data [lines] \n                    (split \n                        (get contents) [blocks]\n                    )\n                ) \"ERROR: cannot print a directory.\"\n            )\n        )\n    )\n)"
+            ],
+            [
+                "x",
+                "cd",
+                "(ifElse \n    (\"exists? _\" \n        (\"make absolute _\" \n            (item 1 nil)\n        )\n    ) \n    (ifElse \n        (= \n            (\"type of _\" \n                (item 1 nil)\n            ) d\n        ) \n        (\"set $file-1-255-255-255 _ to _\" /env/pwd \n            (\"make absolute _\" \n                (item 1 nil)\n            )\n        ) \n        (\"print _\" \"ERROR: not a directory\")\n    ) \n    (\"print _\" \"ERROR: Not Found\")\n)"
+            ],
+            [
+                "x",
+                "touch",
+                "(\"touch $file-1-255-255-255 _ _\" \n    (item 1 nil) \\f\n)"
+            ],
+            [
+                "x",
+                "mkdir",
+                "(\"touch $file-1-255-255-255 _ _\" \n    (item 1 nil) d\n)"
+            ],
+            [
+                "x",
+                "rm",
+                "(\"rm $file-1-255-255-255 _ recursivly? _\" \n    (\"make absolute _\" \n        (item 1 \n            (\"args _\" nil)\n        )\n    ) \n    (= \n        (item 2 \n            (\"args _\" nil)\n        ) -r\n    )\n)"
+            ],
+            [
+                "x",
+                "less",
+                "(\n    (var render) \n    (set render \n        (cmd (\n            (var line stout_old) \n            (set stout_old \n                (\"get $file-1-255-255-255 _\" /dev/tty0)\n            ) \n            (set line 1) \n            (\"catch _ _\" quit (\n                (until \n                    (key [q]) (\n                    (\"set $file-1-255-255-255 _ to _\" /dev/tty0 \n                        (data [text] \n                            (list)\n                        )\n                    ) \n                    (warp \n                        (for i \n                            (get line) \n                            (ifThen \n                                (< \n                                    (+ \n                                        (get line) 25\n                                    ) \n                                    (data [length] \n                                        (split \n                                            (get file) [line]\n                                        )\n                                    )\n                                ) \n                                (+ \n                                    (get line) 25\n                                ) \n                                (data [length] \n                                    (split \n                                        (get file) [line]\n                                    )\n                                )\n                            ) \n                            (\"print _\" \n                                (item \n                                    (get i) \n                                    (split \n                                        (get file) [line]\n                                    )\n                                )\n                            )\n                        )\n                    ) \n                    (waitUntil \n                        (key \"[any key]\")\n                    ) \n                    (if \n                        (and \n                            (key [j]) \n                            (< \n                                (get line) \n                                (data [length] \n                                    (split \n                                        (get file) [line]\n                                    )\n                                )\n                            )\n                        ) \n                        (+= line 1) \n                        (and \n                            (key [k]) \n                            (< 1 \n                                (get line)\n                            )\n                        ) \n                        (+= line -1) \n                        (key [q]) \n                        (\"throw _\" \n                            (get quit)\n                        )\n                    )\n                )\n                ) \n                (\"set $file-1-255-255-255 _ to _\" /dev/tty0 \n                    (get stout_old)\n                )\n            ))\n        ) file)\n    ) \n    (ifElse \n        (\"exists? _\" \n            (\"make absolute _\" \n                (item 1 \n                    (\"args _\" nil)\n                )\n            )\n        ) \n        (if \n            (= \n                (\"type of _\" \n                    (item 1 \n                        (\"args _\" nil)\n                    )\n                ) \\f\n            ) \n            (run \n                (get render) \n                (\"get $file-1-255-255-255 _\" \n                    (item 1 \n                        (\"args _\" nil)\n                    )\n                )\n            ) \n            (= \n                (\"type of _\" \n                    (item 1 \n                        (\"args _\" nil)\n                    )\n                ) x\n            ) \n            (run \n                (get render) \n                (\"encode blocks _ to text _ pretty\" \n                    (\"get $file-1-255-255-255 _\" \n                        (item 1 \n                            (\"args _\" nil)\n                        )\n                    ) t\n                )\n            ) \n            (= \n                (\"type of _\" \n                    (item 1 \n                        (\"args _\" nil)\n                    )\n                ) d\n            ) \n            (\"print _\" \"ERROR: cannot print a directory\")\n        ) \n        (\"print _\" \"ERROR: not found.\")\n    )\n)"
+            ],
+            [
+                "x",
+                "reset-filesys",
+                "(\n    (wait 0.1) \n    (var choice) \n    (\"print _\" \"ARE YOU SURE YOU WANT TO RESET YOUR FILESYSTEM? [y/N]: \") \n    (set choice \n        (input)\n    ) \n    (ifElse \n        (= \n            (get choice) y\n        ) (\n        (set setup 0) \n        (\"print _\" \"Reboot to aply.\")\n    ) \n        (\"print _\" canceled.)\n    )\n)"
+            ],
+            [
+                "x",
+                "export",
+                "(if \n    (\"args _ empty?\" nil) (\n    (wait 0.1) \n    (\"export _ as _ .txt $nl $(IDE only)-0.75\" \n        (data [json] \n            (\"treemap _ over _\" \n                (ring \n                    (ifThen \n                        (is \n                            (get #1) [command]\n                        ) \n                        (data [lines] \n                            (split \n                                (get #1) [blocks]\n                            )\n                        ) \n                        (get #1)\n                    ) #1\n                ) \n                (item 3 \n                    (get \"File System\")\n                )\n            )\n        ) \"Snap!nix Neo disk image\"\n    )\n) \n    (and \n        (= \n            (item 1 \n                (\"args _\" nil)\n            ) -f\n        ) \n        (\"exists? _\" \n            (\"make absolute _\" \n                (item 2 \n                    (\"args _\" nil)\n                )\n            )\n        )\n    ) \n    (\"export _ as _ .txt $nl $(IDE only)-0.75\" \n        (data [json] \n            (list \n                (\"type of _\" \n                    (item 2 \n                        (\"args _\" nil)\n                    )\n                ) \n                (item 2 \n                    (\"args _\" nil)\n                ) \n                (ifThen \n                    (is \n                        (\"get $file-1-255-255-255 _\" \n                            (item 2 \n                                (\"args _\" nil)\n                            )\n                        ) [command]\n                    ) \n                    (\"encode blocks _ to text _ pretty\" \n                        (\"get $file-1-255-255-255 _\" \n                            (item 2 \n                                (\"args _\" nil)\n                            )\n                        ) t\n                    ) \n                    (\"get $file-1-255-255-255 _\" \n                        (item 2 \n                            (\"args _\" nil)\n                        )\n                    )\n                )\n            )\n        ) \n        (item 2 \n            (\"args _\" nil)\n        )\n    ) \n    (and \n        (= \n            (item 1 \n                (\"args _\" nil)\n            ) -f\n        ) \n        (not \n            (\"exists? _\" \n                (item 2 \n                    (\"args _\" nil)\n                )\n            )\n        )\n    ) \n    (\"print _\" \"ERROR: file not found.\")\n)"
+            ],
+            [
+                "x",
+                "import",
+                "(if \n    (\"args _ empty?\" nil) (\n    (wait 0.1) \n    (\"print _\" \"Are you sure you want to replace your ENTIRE DISK with this image?\nyou will loose ALL YOUR FILES that are not in the new image.\nAre you sure? [y/N]: \") \n    (ifElse \n        (= \n            (input) y\n        ) (\n        (put 3 \n            (get \"File System\") \n            (\"convert export form to internal form _ quiet? _\" \n                (split \n                    (\"read file _\" \n                        (\"select _ with filepicker\" file)\n                    ) [json]\n                ) f\n            )\n        ) \n        (\"print _\" Imported.)\n    ) \n        (\"print _\" Canceled.)\n    )\n) \n    (= \n        (item 1 \n            (\"args _\" nil)\n        ) -f\n    ) (\n    (wait 0.1) \n    (var file in) \n    (set file \n        (item 1 \n            (\"convert export form to internal form _ quiet? _\" \n                (split \n                    (join [ \n                        (\"read file _\" \n                            (\"select _ with filepicker\" file)\n                        ) ]\n                    ) [json]\n                ) t\n            )\n        )\n    ) \n    (ifElse \n        (\"exists? _\" \n            (\"make absolute _\" \n                (item 2 \n                    (get file)\n                )\n            )\n        ) \n        (\"print _\" \"ERROR: file exists.\") (\n        (\"touch $file-1-255-255-255 _ _\" \n            (\"make absolute _\" \n                (item 2 \n                    (get file)\n                )\n            ) \n            (item 1 \n                (get file)\n            )\n        ) \n        (\"set $file-1-255-255-255 _ to _\" \n            (\"make absolute _\" \n                (item 2 \n                    (get file)\n                )\n            ) \n            (item 3 \n                (get file)\n            )\n        ) \n        (\"print _\" imported.)\n    )\n    )\n)\n)"
+            ],
+            [
+                "x",
+                "reboot",
+                "(\n    (stop \"[all but this script]\") \n    (send [__shout__go__])\n)"
+            ],
+            [
+                "x",
+                "uptime",
+                "(\"print _\" \n    (join \n        (current [year]) - \n        (current [month]) - \n        (current [date]) \" up \" \n        (timer) \"s. \" \n        (errorObsolete) \" processes running.\"\n    )\n)"
+            ],
+            [
+                "x",
+                "browse",
+                "(\n    (wait 0.1) \n    (xWindowDolphin)\n)"
+            ]
+        ]
+    ],
+    [
+        "d",
+        "dev",
+        [
+            [
+                "f",
+                "null",
+                ""
+            ],
+            [
+                "f",
+                "tty0",
+                "\nSnap!nix Neo Beta v0.1.5\n\nCopyleft 2024 The Snap! community.\nSharing is caring!\n/home/snapper$ export"
+            ],
+            [
+                "f",
+                "lastKey",
+                "enter"
+            ],
+            [
+                "d",
+                "stdin",
+                [
+                    [
+                        "f",
+                        "text",
+                        "export"
+                    ],
+                    [
+                        "f",
+                        "on.bool",
+                        "#f"
+                    ],
+                    [
+                        "f",
+                        "cursor.bool",
+                        "#f"
+                    ]
+                ]
+            ],
+            [
+                "f",
+                "js",
+                "#f"
+            ]
+        ]
+    ],
+    [
+        "d",
+        "etc",
+        [
+            [
+                "x",
+                "init",
+                "(\n    (resetTimer) \n    (run \n        (\"get $file-1-255-255-255 _\" /bin/clear)\n    ) \n    (fork \n        (\"get $file-1-255-255-255 _\" /etc/isJS)\n    ) \n    (fork \n        (\"get $file-1-255-255-255 _\" /etc/teletype)\n    ) \n    (fork \n        (\"get $file-1-255-255-255 _\" /etc/blink)\n    ) \n    (\"print _\" \"Snap!nix Neo Beta v0.1.5\n\nCopyleft 2024 The Snap! community.\nSharing is caring!\") \n    (fork \n        (\"get $file-1-255-255-255 _\" /bin/sh)\n    )\n)"
+            ],
+            [
+                "x",
+                "teletype",
+                "(forever \n    (warp (\n        (hide) \n        (\"system: draw teletype\")\n    ))\n)"
+            ],
+            [
+                "x",
+                "blink",
+                "(forever (\n    (\"set $file-1-255-255-255 _ to _\" /dev/stdin/cursor.bool \n        (\"b->t _\" \n            (not \n                (\"t->b _\" \n                    (\"get $file-1-255-255-255 _\" /dev/stdin/cursor.bool)\n                )\n            )\n        )\n    ) \n    (wait 0.5)\n))"
+            ],
+            [
+                "x",
+                "isJS",
+                "(forever (\n    (\"set $file-1-255-255-255 _ to _\" /dev/js \n        (\"b->t _\" \n            (\"JS enabled?\")\n        )\n    ) \n    (wait 0.1)\n))"
+            ]
+        ]
+    ],
+    [
+        "d",
+        "home",
+        [
+            [
+                "d",
+                "snapper",
+                [
+                    [
+                        "f",
+                        ".shadow",
+                        "c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3eab1d80b931dd472634dfac71cd34ebc35d16ab7fb8a90c81f975113d6c7538dc69dd8de9077ec"
+                    ],
+                    [
+                        "x",
+                        "program",
+                        "(warp (\n    (run \n        (\"get $file-1-255-255-255 _\" /bin/clear)\n    ) \n    (for i 1 30 \n        (\"print _\" \n            (get i)\n        )\n    )\n))"
+                    ],
+                    [
+                        "x",
+                        "bari",
+                        "(\n    (var \"run line\") \n    (set \"run line\" \n        (cmd nil #1)\n    ) \n    (if \n        (\"args _ empty?\" nil) nil t \n        (\"print _\" \n            (\"make absolute _\" \n                (item 1 nil)\n            )\n        )\n    )\n)"
+                    ]
+                ]
+            ]
+        ]
+    ],
+    [
+        "d",
+        "tmp",
+        {}
+    ],
+    [
+        "d",
+        "env",
+        [
+            [
+                "f",
+                "PATH",
+                "/bin/"
+            ],
+            [
+                "f",
+                "pwd",
+                "/home/snapper"
+            ],
+            [
+                "f",
+                "user",
+                "snapper"
+            ]
+        ]
+    ]
+]
