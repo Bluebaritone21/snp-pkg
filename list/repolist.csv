@@ -1,0 +1,5 @@
+name,desc,author,file
+man,Manual Viewer for Snap!nix Neo,BlueBaritone21,core/man.json
+coreutils,Basic executables from the standard Snap!nix distrobution,BlueBaritone21,core/coreutils.json
+grep,Search for substrings in files and directories,BlueBaritone21,core/grep.json
+numguess,Basic number guessing game,BlueBaritone21,games/numguess.json
