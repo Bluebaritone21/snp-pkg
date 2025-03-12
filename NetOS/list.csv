@@ -1,0 +1,3 @@
+name,author,desc,file
+packages,BlueBaritone21,Install and Manage software on NetOS,core/packages
+txt-edit,BlueBaritone21,GUI program to edit text,core/text
